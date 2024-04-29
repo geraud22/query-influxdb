@@ -2,7 +2,7 @@ import requests
 from dotenv import load_dotenv
 import os
 from csv2json import csv_to_json
-from fluxquerycreator import createFluxQuery
+from flux_query_creator import createFluxQuery
 
 load_dotenv()
 
