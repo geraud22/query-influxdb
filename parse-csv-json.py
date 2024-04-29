@@ -14,9 +14,6 @@ def csv_to_json(csvFilePath, jsonFilePath):
     with open(jsonFilePath, 'w') as jsonFile:
         json.dump(jsonArray, jsonFile, indent=4)
 
-# Example usage
-csv_to_json('data.csv', 'data.json')
-
-if __name__ == 'main':
+if __name__ == '__main__':
     # Example usage
     csv_to_json('data.csv', 'data.json')
