@@ -6,6 +6,9 @@ def csv_to_json(csvFilePath, jsonFilePath):
 
     # Read CSV file and add rows to jsonArray
     with open(csvFilePath, 'r') as csvFile:
+        next(csvFile)
+        next(csvFile)
+        next(csvFile)
         csvReader = csv.DictReader(csvFile)
         for row in csvReader:
             jsonArray.append(row)
