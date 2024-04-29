@@ -1,30 +1,43 @@
-from flask import Flask
+from flask import Flask, request
 from flask_cors import CORS
 import requests
 from dotenv import load_dotenv
 import os
 from csv2json import csv_to_json
-from flux_query_creator import createFluxQuery
 
 load_dotenv()
-
 INFLUX_URL = os.getenv("INFLUX_URL")
-INFLUX_ORG = os.getenv("INFLUX_ORG")
-INFLUX_API_TOKEN = os.getenv("INFLUX_API_TOKEN")
-
 
 app = Flask(__name__)
 CORS(app)
 
 @app.route('/query', methods=['GET'])
 def query_influxdb():
-    url = f"{INFLUX_URL}/api/v2/query?org={INFLUX_ORG}"
+    # Define endpoint parameters
+    parameters = {
+    "organisation": request.args.get('organisation'),
+    "auth_token": request.args.get('token'),
+    "bucket": request.args.get('bucket'),
+    "app_id": request.args.get('app-id'),
+    "device_id": request.args.get('device-id'),
+    "field": request.args.get('field'),
+    "range": request.args.get("range"),
+    }
+    
+    for key,value in parameters.items():
+        if value is None:
+            return {'error': 'Route received insufficient arguments.'}
+    
+    url = f"{INFLUX_URL}/api/v2/query?org={parameters['organisation']}"
     headers = {
         'Content-Type': 'application/vnd.flux',
         'Accept': 'application/csv',
-        'Authorization': f'Token {INFLUX_API_TOKEN}'
+        'Authorization': f'Token {parameters['auth_token']}'
     }
-    data = createFluxQuery()
+    data = f'''from(bucket: "{parameters['bucket']}")|> range(start: {parameters['range']})
+            |> filter(fn: (r) => r["topic"] == "application/{parameters['app_id']}/device/{parameters['device_id']}/event/up")
+            |> filter(fn: (r) => r["_field"] == "{parameters['field']}")
+            |> yield(name: "last")'''
 
     response = requests.post(url, headers=headers, data=data)
     
