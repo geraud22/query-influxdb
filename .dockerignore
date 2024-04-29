@@ -1,5 +1,6 @@
-/venv
+/venv/
 *.csv
 *.json
 __pycache__/
 *.html
+*.gitignore
