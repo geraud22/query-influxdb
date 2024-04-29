@@ -3,3 +3,4 @@
 *.json
 /legacy-data
 .env
+__pycache__/
