@@ -2,7 +2,8 @@
 FROM python:alpine
 
 # Update the package lists
-RUN apt-get update
+RUN apk update && \
+    apk upgrade
 
 # Set the working directory in the container
 WORKDIR /app
