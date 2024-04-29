@@ -4,9 +4,6 @@ import io
 
 def csv_to_json(csvFile, jsonFile):
     jsonArray = []
-
-    #with open(csvFilePath, 'r') as csvFile:
-        #Read csvRows into memory
     csvRows = list(csvFile)
     
     # Create Metadata row counter which increments each time a row starts with '#'
