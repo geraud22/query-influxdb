@@ -1,7 +1,7 @@
 import csv
-import json
 import io
 
+# Returns JSON Array
 def csv_to_json(csvFile, jsonFile):
     jsonArray = []
     csvRows = list(csvFile)
@@ -15,6 +15,4 @@ def csv_to_json(csvFile, jsonFile):
     for row in csvReader:
         jsonArray.append(row)
 
-    # Write JSON file
-    with open(jsonFile, 'w') as jsonFile:
-        json.dump(jsonArray, jsonFile, indent=4)
+    return jsonArray
