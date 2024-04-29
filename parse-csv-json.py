@@ -24,4 +24,4 @@ def csv_to_json(csvFilePath, jsonFilePath):
 
 if __name__ == '__main__':
     # Example usage
-    csv_to_json('flow-meter-3h.csv', 'flow-meter(1).json')
+    csv_to_json('data.csv', 'data.json')
