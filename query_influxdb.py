@@ -17,7 +17,7 @@ def query_influxdb():
         "app_id": request.args.get('app-id'),
         "device_id": request.args.get('device-id'),
         "field": request.args.get('field'),
-        "time_range": request.args.get("range"),
+        "time_range": request.args.get("time-range"),
     }
     
     for key,value in parameters.items():
