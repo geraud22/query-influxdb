@@ -20,5 +20,5 @@ EXPOSE 5000
 # Set the FLASK_APP environment variable
 ENV FLASK_APP=query_influxdb.py
 
-# Run the Flask application
-CMD ["flask", "run", "--host=0.0.0.0"]
+# Run Flask application with Gunicorn
+CMD ["gunicorn", "--bind", "0.0.0.0:5000", "query_influxdb:app"]

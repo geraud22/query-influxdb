@@ -10,21 +10,22 @@ CORS(app)
 def query_influxdb():
     # Define endpoint parameters
     parameters = {
-        "url": request.args.get('url'),    
-        "organisation": request.args.get('organisation'),
-        "auth_token": request.args.get('token'),
+        "url": request.args.get('url'),
+        "auth_token": request.args.get('auth_token'),
+        "org": request.args.get('org'),
         "bucket": request.args.get('bucket'),
-        "app_id": request.args.get('app-id'),
-        "device_id": request.args.get('device-id'),
+        "app_id": request.args.get('app_id'),
+        "device_id": request.args.get('device_id'),
         "field": request.args.get('field'),
-        "time_range": request.args.get("time-range"),
+        "time_range": request.args.get("time_range"),
+        "url_port": request.args.get('url_port')
     }
     
     for key,value in parameters.items():
         if value is None:
-            return {'error': 'Route received insufficient arguments.'}
+            return {'error':f'Route expects 9 arguments. Received: {len(parameters)} arguments.'}
     
-    url = f"{parameters['url']}/api/v2/query?org={parameters['organisation']}"
+    url = f"{parameters['url']}:{parameters['url_port']}/api/v2/query?org={parameters['org']}"
     headers = {
         'Content-Type': 'application/vnd.flux',
         'Accept': 'application/csv',
