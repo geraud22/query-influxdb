@@ -2,7 +2,7 @@ import csv
 import io
 
 # Returns JSON Array
-def csv_to_json(csvFile, jsonFile):
+def csv_to_json(csvFile):
     jsonArray = []
     csvRows = list(csvFile)
     

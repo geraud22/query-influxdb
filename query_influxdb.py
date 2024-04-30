@@ -10,14 +10,14 @@ CORS(app)
 def query_influxdb():
     # Define endpoint parameters
     parameters = {
-        "url": request.args.get('host-url'),    
+        "url": request.args.get('url'),    
         "organisation": request.args.get('organisation'),
         "auth_token": request.args.get('token'),
         "bucket": request.args.get('bucket'),
         "app_id": request.args.get('app-id'),
         "device_id": request.args.get('device-id'),
         "field": request.args.get('field'),
-        "range": request.args.get("range"),
+        "time_range": request.args.get("range"),
     }
     
     for key,value in parameters.items():
@@ -30,7 +30,7 @@ def query_influxdb():
         'Accept': 'application/csv',
         'Authorization': f'Token {parameters['auth_token']}'
     }
-    data = f'''from(bucket: "{parameters['bucket']}")|> range(start: {parameters['range']})
+    data = f'''from(bucket: "{parameters['bucket']}")|> range(start: {parameters['time_range']})
             |> filter(fn: (r) => r["topic"] == "application/{parameters['app_id']}/device/{parameters['device_id']}/event/up")
             |> filter(fn: (r) => r["_field"] == "{parameters['field']}")
             |> yield(name: "last")'''
@@ -38,7 +38,7 @@ def query_influxdb():
     response = requests.post(url, headers=headers, data=data)
     
     if response.status_code == 200:
-        jsonArray = csv_to_json(response.text, 'query-data.json')
+        jsonArray = csv_to_json(response.text)
         return jsonArray
     else:
         return {'error': f'Failed to query InfluxDB. Status code: {response.status_code}. Reason: {response.reason}'}
