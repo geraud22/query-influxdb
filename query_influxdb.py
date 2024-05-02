@@ -22,9 +22,10 @@ def query_influxdb():
     }
     
     received_args = request.args.to_dict()
-    for key,value in parameters.items():
-        if value is None:
-            return {'error':f'Route expects 9 arguments. Received: {len(received_args)} arguments.'}
+    
+    for key, value in parameters.items():
+        if value is None or value.strip() == '':
+            return {'error': f'Missing argument: {key}'}
     
     url = f"{parameters['url']}:{parameters['url_port']}/api/v2/query?org={parameters['org']}"
     headers = {
