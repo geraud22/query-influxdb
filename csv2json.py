@@ -1,6 +1,14 @@
 import csv
 import io
 
+def dataFilter(jsonArray):
+    filtered_data = []
+    for item in jsonArray:
+        filtered_item = {'sensor_value': item['_value'], 'uplink_time': item['_time']}
+        filtered_data.append(filtered_item)
+        
+    return filtered_data
+
 # Returns JSON Array
 def csv_to_json(csvFile):
     jsonArray = []
@@ -15,4 +23,4 @@ def csv_to_json(csvFile):
     for row in csvReader:
         jsonArray.append(row)
 
-    return jsonArray
+    return dataFilter(jsonArray)
