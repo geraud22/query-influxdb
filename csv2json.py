@@ -24,3 +24,9 @@ def csv_to_json(csvFile):
         jsonArray.append(row)
 
     return dataFilter(jsonArray)
+
+def specifyRange(startRange, stopRange):
+    if stopRange is None:
+        return f"range( start: {startRange})"
+    else:
+        return f"range( start: {startRange}, stop: {stopRange})"

@@ -1,7 +1,7 @@
 from flask import Flask, request
 from flask_cors import CORS
 import requests
-from csv2json import csv_to_json
+from csv2json import csv_to_json, specifyRange
 
 app = Flask(__name__)
 CORS(app)
@@ -10,30 +10,31 @@ CORS(app)
 def query_influxdb():
     # Define endpoint parameters
     parameters = {
-        "url": request.args.get('url'),
-        "auth_token": request.args.get('auth_token'),
+        "host_url": request.args.get('url'),
         "org": request.args.get('org'),
+        "auth_token": request.args.get('auth_token'),
         "bucket": request.args.get('bucket'),
+        "start_range": request.args.get("start_range"),
+        "stop_range": request.args.get('stop_range'),
         "app_id": request.args.get('app_id'),
         "device_id": request.args.get('device_id'),
         "field": request.args.get('field'),
-        "time_range": request.args.get("time_range"),
-        "url_port": request.args.get('url_port')
     }
-    
-    received_args = request.args.to_dict()
     
     for key, value in parameters.items():
         if value is None or value.strip() == '':
-            return {'error': f'Missing argument: {key}'}
+            if key == 'stop_range': # Make the parameter optional.
+                continue
+            else:
+                return {'error': f'Missing argument: {key}'}
     
-    url = f"{parameters['url']}:{parameters['url_port']}/api/v2/query?org={parameters['org']}"
+    url = f"{parameters['host_url']}/api/v2/query?org={parameters['org']}"
     headers = {
         'Content-Type': 'application/vnd.flux',
         'Accept': 'application/csv',
         'Authorization': f'Token {parameters['auth_token']}'
     }
-    data = f'''from(bucket: "{parameters['bucket']}")|> range(start: {parameters['time_range']})
+    data = f'''from(bucket: "{parameters['bucket']}")|> {specifyRange(parameters['start_range'], parameters['stop_range'])}
             |> filter(fn: (r) => r["topic"] == "application/{parameters['app_id']}/device/{parameters['device_id']}/event/up")
             |> filter(fn: (r) => r["_field"] == "{parameters['field']}")
             |> yield(name: "last")'''
